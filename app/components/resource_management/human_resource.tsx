@@ -1,11 +1,13 @@
 "use client";
 import React from 'react';
 import { ChevronDown, Plus, Search, Filter, MoreHorizontal } from 'lucide-react';
-import useWindowSize from '@/app/hooks/useWindowSize';
-
+import EmployeeModal from './add_member_modal';
+import { useState } from 'react';
+import { BTButton } from '@/app/components/buttons/BTButton';
+import  AddCircleIcon  from '@/app/public/add_circle.svg';
 const HumanResourcesTab = () => {
-    const {  height } = useWindowSize();
-
+    // const {  height } = useWindowSize();
+const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
     const teamData = [
       {
         id: '#123',
@@ -147,15 +149,19 @@ const HumanResourcesTab = () => {
                   <span>Role</span>
                   <ChevronDown className="w-4 h-4" />
                 </div>
-                <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">
+                {/* <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">
                   <Plus className="w-4 h-4" />
                   <span>Add Team Members</span>
-                </button>
+                </button> */}
+                <BTButton text='Add Team Members' icon={AddCircleIcon} loading={false} size='medium' onClick={() => {
+                  // Perform login logic here 
+                   setIsAddMemberModalOpen(true)
+                }  }/>
               </div>
             </div>
           </div>
   
-          <div className="overflow-x-auto" style={{ maxHeight: height - 580 }}>
+          <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
@@ -200,15 +206,22 @@ const HumanResourcesTab = () => {
               </tbody>
             </table>
           </div>
+
+          {/* Employee Modal */}
+        <EmployeeModal
+          isOpen={isAddMemberModalOpen}
+          onClose={() => setIsAddMemberModalOpen(false)}
+          onSubmit={() => {}}
+        />
   
           {/* Pagination */}
-          <div className="px-6 py-4 border-t">
+          {/* <div className="px-6 py-4 border-t">
             <div className="flex items-center justify-center space-x-2">
               <button className="px-3 py-2 text-sm bg-blue-600 text-white rounded-lg">1</button>
               <span className="px-3 py-2 text-sm text-gray-600">of 10</span>
               <button className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900">&gt;</button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     );

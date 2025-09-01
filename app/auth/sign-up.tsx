@@ -6,30 +6,32 @@ import AppIcon from "@/app/public/app-icon.svg";
 import {inter} from '@/app/fonts'
 import InputField from '../components/textField';
 import { AuthPageProps } from '../models/common';
-import { AuthPageType, UserPackageType } from '../utility/app-enum';
-import clsx from 'clsx';
+import { AuthPageType } from '../utility/app-enum';
+// import clsx from 'clsx';
+import { useRouter } from "next/navigation";
 
 
 export default function SignUpPage({onPageTypeChange}: AuthPageProps)  {
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [companyName, setCompanyName] = useState('');
+  // const [companyName, setCompanyName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [userPackage, setUserPackage] = useState(UserPackageType.STARTER);
+  // const [userPackage, setUserPackage] = useState(UserPackageType.STARTER);
   const [agreed, setAgreed] = useState(false);
 
-  const userPackageOptions = [UserPackageType.STARTER, UserPackageType.PRO, UserPackageType.ENTERPRISE];
+  // const userPackageOptions = [UserPackageType.STARTER, UserPackageType.PRO, UserPackageType.ENTERPRISE];
+  const router = useRouter();
 
 
     return (
       <div className={`${inter.className} antialiased flex flex-col justify-center content-center w-full min-h-screen absolute overflow-auto`}> 
         <div className='h-[20px]'></div>
         <div className='flex flex-row justify-center content-center'>
-         <Image src={AppIcon} alt="info" width={36} height={37} className="center"/>
-         <div className='text-[#060606] text-[27px] font-bold'>Build Track</div>
+         <Image src={AppIcon} alt="info" width={160} height={40} className="center"/>
+         {/* <div className='text-[#060606] text-[27px] font-bold'>Build Track</div> */}
         </div>
         <div className='h-9'></div>
         <div className='flex flex-col justify-center content-center relative'>
@@ -67,7 +69,7 @@ export default function SignUpPage({onPageTypeChange}: AuthPageProps)  {
                       className="h-[48px] rounded-md"
                       mandatory={false}
                     />
-          <InputField
+          {/* <InputField
                       name=""
                       label="Company Name"
                       onChange={(e) => setCompanyName(e.target.value)}
@@ -76,7 +78,7 @@ export default function SignUpPage({onPageTypeChange}: AuthPageProps)  {
                       placeholder="Enter Company Name"
                       className="h-[48px] rounded-md"
                       mandatory={false}
-                    />
+                    /> */}
           <InputField
                       name=""
                       label="Password"
@@ -97,7 +99,7 @@ export default function SignUpPage({onPageTypeChange}: AuthPageProps)  {
                       className="h-[48px] rounded-md"
                       mandatory={false}
                     />
-              <div className="w-full relative flex flex-row justify-center items-center gap-5 h-12">
+              {/* <div className="w-full relative flex flex-row justify-center items-center gap-5 h-12">
               {userPackageOptions.map((option) => (
                 <button
                   key={option}
@@ -112,7 +114,7 @@ export default function SignUpPage({onPageTypeChange}: AuthPageProps)  {
           {option}
         </button>
       ))}
-      </div>
+      </div> */}
       <div className='h-0'></div>
 
       <div className="flex flex-row items-center justify-center space-x-2">
@@ -153,6 +155,12 @@ export default function SignUpPage({onPageTypeChange}: AuthPageProps)  {
           <button
                 type="submit"
                 className={`${inter.className} antialiased font-semibold text-[16px] h-[48px] text-white bg-primaryColor rounded-md`}
+                onClick={() => {
+                  // Perform sign-up logic here 
+                  console.log("Sign Up clicked");
+                  localStorage.setItem("isLogin", 'true')
+                  router.push(`/tenant_onboarding`);
+                }}
               >
                 Sign Up
           </button>

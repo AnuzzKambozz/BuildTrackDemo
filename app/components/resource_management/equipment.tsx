@@ -1,12 +1,12 @@
 "use client";
 import React from 'react';
 import {  Search, Filter, Download, MoreHorizontal } from 'lucide-react';
-import useWindowSize from '@/app/hooks/useWindowSize';
+// import useWindowSize from '@/app/hooks/useWindowSize';
 
 
 
 const EquipmentTab = () => {
-    const {  height } = useWindowSize();
+    // const {  height } = useWindowSize();
     const equipmentData = [
       {
         id: '#123',
@@ -161,7 +161,7 @@ const EquipmentTab = () => {
             </div>
           </div>
   
-          <div className="overflow-x-auto" style={{ maxHeight: height - 580 }}>
+          <div className="overflow-x-auto" >
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>

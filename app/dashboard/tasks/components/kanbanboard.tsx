@@ -9,7 +9,7 @@ import { BTButton } from '@/app/components/buttons/BTButton';
 // import router from 'next/router';
 import AddCircleIcon from '@/app/public/add_circle.svg';
 import filterIcon from '@/app/public/filter_icon.svg';
-
+import { sampleProjects, sampleMilestones, sampleAssignees } from '../utils/sampale_data'
 
 export interface KanbanBoardProps {
     className?: string;
@@ -120,7 +120,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
           <div className="flex justify-between items-center mb-8 p-[38px] h-[100px] rounded-md border-b shadow-sm bg-white">
             <div>
               <div className={`${inter.className} antialiased text-[24px] font-semibold mb-2 text-[#171E34]` }>Tasks</div>
-              <p className={`${inter.className} antialiased text-[14px] font-medium text-[#525252]` }>Lorem ipsum is a dummy text to fill space</p>
+              <p className={`${inter.className} antialiased text-[14px] font-medium text-[#525252]` }>Track and manage all project tasks with Kanban board</p>
             </div>
             
             <div className="flex space-x-3">
@@ -147,6 +147,9 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
         <AddTaskModal
           isOpen={modalOpen}
           onClose={() => setModalOpen(false)}
+          projects={sampleProjects}
+          milestones={sampleMilestones}
+          assignees={sampleAssignees}
           onSubmit={handleTaskSubmit}
           columnId={activeColumn}
         />

@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { ComponentProps, Milestone } from '@/app/types/project.type';
+import InputField from '@/app/components/textField';
+import { inter } from '@/app/fonts';
+import Dropdown from '@/app/components/dropdowns/dropdown_new';
 
 const ProjectTimeline: React.FC<ComponentProps> = ({ data, updateData }) => {
   const [newMilestone, setNewMilestone] = useState<{ name: string; targetDate: string }>({ 
     name: '', 
     targetDate: '' 
   });
+
+  const projectStatuses = ['Planning', 'In Progress', 'On Hold'];
+
 
   const handleInputChange = (field: keyof typeof data, value: string): void => {
     updateData({ [field]: value });
@@ -38,19 +44,21 @@ const ProjectTimeline: React.FC<ComponentProps> = ({ data, updateData }) => {
       {/* Start Date and Estimate End Date */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Start Date*
-          </label>
-          <input
-            type="date"
-            value={data.startDate}
-            onChange={(e) => handleInputChange('startDate', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+
+           <InputField
+                      name="startDate"
+                      label="Start Date"
+                      placeholder="dd/mm/yyyy"
+                      onChange={(e) => handleInputChange('startDate', e.target.value)}
+                      value={data.startDate}
+                      type="date"
+                      className="h-[48px] rounded-md"
+                      mandatory={true}
+                    />
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          {/* <label className="block text-sm font-medium text-gray-700 mb-2">
             Estimate End Date*
           </label>
           <input
@@ -58,14 +66,27 @@ const ProjectTimeline: React.FC<ComponentProps> = ({ data, updateData }) => {
             value={data.estimateEndDate}
             onChange={(e) => handleInputChange('estimateEndDate', e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          /> */}
+
+
+           <InputField
+                      name="estimateEndDate"
+                      label="Estimate End Date"
+                      placeholder="dd/mm/yyyy"
+                      onChange={(e) => handleInputChange('estimateEndDate', e.target.value)}
+                      value={data.estimateEndDate}
+                      type="date"
+                      className="h-[48px] rounded-md"
+                      mandatory={true}
+                    />
         </div>
       </div>
 
       {/* Project Status */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">
+        {/* <label className={`${inter.className} antialiased block text-sm font-medium text-[#7E7E7E] mb-3 pl-[10px]`}>
           Project Status
+          <span className="text-asteriskColor text-[14px]">*</span>
         </label>
         <div className="flex gap-2">
           {['Planning', 'In Progress', 'On Hold'].map((status) => (
@@ -85,40 +106,85 @@ const ProjectTimeline: React.FC<ComponentProps> = ({ data, updateData }) => {
               {status}
             </button>
           ))}
-        </div>
+        </div> */}
+        <Dropdown
+                name="projectType"
+                value={data.projectStatus}
+                options={projectStatuses}
+                onChange={(value: string | number) => handleStatusChange(String(value))}
+                label=" Project Status"
+                placeholder="Select Project Status"
+                mandatory={true}
+                searchable={false}
+                showAddButton={false}
+                // addButtonText='+ Add Client'
+                // onAddItem={() => {
+                //   console.log('Add Client clicked');
+                // }}
+                // searchPlaceholder="Search client..."
+              />
       </div>
 
       {/* Key Milestones */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">
+        <label className={`${inter.className} antialiased block text-sm font-medium text-[#7E7E7E] mb-3 pl-[10px]`}>
           Key Milestones
+          <span className="text-asteriskColor text-[14px]">*</span>
         </label>
         
         {/* Add New Milestone */}
         <div className="flex gap-4 mb-4">
           <div className="flex-1">
-            <input
+            {/* <input
               type="text"
               value={newMilestone.name}
               onChange={(e) => setNewMilestone(prev => ({ ...prev, name: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Milestone Name*"
-            />
+            /> */}
+
+                <InputField
+                      name=""
+                      label=""
+                      placeholder="Enter milestone name"
+                      onChange={(e) => setNewMilestone(prev => ({ ...prev, name: e.target.value }))}
+                      value={newMilestone.name}
+                      type="text"
+                      className="h-[48px] rounded-md"
+                      mandatory={false}
+                    />
+
+        
+
+            
           </div>
-          <div className="w-48">
-            <input
+          <div className="">
+            {/* <input
               type="date"
               value={newMilestone.targetDate}
               onChange={(e) => setNewMilestone(prev => ({ ...prev, targetDate: e.target.value }))}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            /> */}
+
+            <InputField
+                      name=""
+                      label=""
+                      placeholder="Enter target date"
+                      onChange={(e) => setNewMilestone(prev => ({ ...prev, targetDate: e.target.value }))}
+                      value={newMilestone.targetDate}
+                      type="date"
+                      className="h-[48px] rounded-md"
+                      mandatory={false}
+                    />
           </div>
-          <button
-            onClick={addMilestone}
-            className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
-          >
-            Add
-          </button>
+          <div>
+                      <button
+                      onClick={addMilestone}
+                      className="px-4  mt-[10px] h-[48px] text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+                    >
+                      Add
+                    </button>
+          </div>
         </div>
 
         {/* Milestone List */}

@@ -8,9 +8,16 @@ import FinancialInformation from '@/app/components/project/FinancialInformation'
 import ProjectTeam from '@/app/components/project/ProjectTeam';
 import PermitsApprovals from '@/app/components/project/PermitsApprovals';
 import useWindowSize from '@/app/hooks/useWindowSize';                 
+import AddClientModal from '@/app/dashboard/client_management/components/add_client_modal';
+import EmployeeModal from '@/app/components/resource_management/add_member_modal';
 
 
 const CreateProjectForm: React.FC = () => {
+
+  const [showAddClientModal, setShowAddClientModal] = useState(false);
+  const [showAddMemberModal, setShowAddMemberModal] = useState(false);
+
+
   const [formData, setFormData] = useState<ProjectFormData>({
     // Basic Information
     projectName: '',
@@ -60,20 +67,20 @@ const CreateProjectForm: React.FC = () => {
     }));
   };
 
-  const handleSaveAsDraft = (): void => {
-    console.log('Saving as draft:', formData);
-    // Implement save as draft logic
-  };
+  // const handleSaveAsDraft = (): void => {
+  //   console.log('Saving as draft:', formData);
+  //   // Implement save as draft logic
+  // };
 
   const handleCreateProject = (): void => {
     console.log('Creating project:', formData);
     // Implement create project logic
   };
 
-  const handleCancel = (): void => {
-    console.log('Canceling form');
-    // Implement cancel logic
-  };
+  // const handleCancel = (): void => {
+  //   console.log('Canceling form');
+  //   // Implement cancel logic
+  // };
 
   return (
     <div className=" w-full overflow-y-auto bg-white" style={{maxHeight: height - 150}}>
@@ -84,6 +91,7 @@ const CreateProjectForm: React.FC = () => {
                 <BasicInformation 
                 data={formData} 
                 updateData={updateFormData} 
+                onAddClient={() => setShowAddClientModal(true)}
                 />
                 
                 <ProjectTimeline 
@@ -99,6 +107,7 @@ const CreateProjectForm: React.FC = () => {
                 <ProjectTeam 
                 data={formData} 
                 updateData={updateFormData} 
+                onAddTeamMember={() => setShowAddMemberModal(true)}
                 />
                 
                 <PermitsApprovals 
@@ -110,7 +119,7 @@ const CreateProjectForm: React.FC = () => {
     </div>
         {/* Form Actions */}
         <div className="mt-8 flex justify-end space-x-4 pb-6">
-            <button
+            {/* <button
               type="button"
               onClick={handleCancel}
               className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -124,7 +133,7 @@ const CreateProjectForm: React.FC = () => {
               className="px-6 py-2 border border-blue-300 text-blue-700 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               Save as Draft
-            </button>
+            </button> */}
             
             <button
               type="button"
@@ -134,6 +143,28 @@ const CreateProjectForm: React.FC = () => {
               Create Project
             </button>
         </div>
+
+        {/* Add Client Modal */}
+          {showAddClientModal && (
+            <AddClientModal
+              isOpen={showAddClientModal}
+              onClose={() => setShowAddClientModal(false)}
+              onSubmit={() => {
+                // Handle new client addition logic here
+                setShowAddClientModal(false);
+              }}
+            />
+          )}
+
+           {/* Employee Modal */}
+        <EmployeeModal
+          isOpen={showAddMemberModal}
+          onClose={() => setShowAddMemberModal(false)}
+          onSubmit={() => {
+            // Handle new employee addition logic here
+            setShowAddMemberModal(false);
+          }}
+        />
     </div>
   );
 };

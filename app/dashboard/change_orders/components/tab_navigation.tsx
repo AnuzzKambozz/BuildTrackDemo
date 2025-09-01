@@ -14,7 +14,7 @@ interface TabNavigationProps {
       { key: 'pending' as const, label: 'Pending' },
       { key: 'approved' as const, label: 'Approved' },
       { key: 'rejected' as const, label: 'Rejected' },
-      { key: 'templates' as const, label: 'Templates' }
+      // { key: 'templates' as const, label: 'Templates' }
     ];
   
     return (

@@ -28,8 +28,8 @@ export default function LoginPage({onPageTypeChange}: AuthPageProps) {
     return (
       <div className={`${inter.className} antialiased flex flex-col justify-center content-center w-full h-full absolute`}> 
         <div className='flex flex-row justify-center content-center'>
-         <Image src={AppIcon} alt="info" width={36} height={37} className="center"/>
-         <div className='text-[#060606] text-[27px] font-bold'>Build Track</div>
+        <Image src={AppIcon} alt="info" width={160} height={40} className="center"/>
+         {/* <div className='text-[#060606] text-[27px] font-bold'>Build Track</div> */}
         </div>
         <div className='h-11'></div>
         <div className='flex flex-col justify-center content-center relative'>

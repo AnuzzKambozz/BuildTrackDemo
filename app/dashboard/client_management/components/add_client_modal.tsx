@@ -2,194 +2,434 @@
 
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { NewClientForm } from '@/app/models/common';
+import { inter } from '@/app/fonts';
+import clsx from 'clsx';
+import InputField from '@/app/components/textField';
+import Dropdown from '@/app/components/dropdowns/dropdown_new';
+import ModalBackdrop from '@/app/components/modal_backdrop';
 
+interface AddClientModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (clientData: ClientFormData) => void;
+  loading?: boolean;
+}
 
-const AddClientModal: React.FC<{
-    isOpen: boolean;
-    onClose: () => void;
-    onSubmit: (client: NewClientForm) => void;
-  }> = ({ isOpen, onClose, onSubmit }) => {
-    const [formData, setFormData] = useState<NewClientForm>({
-      name: '',
-      email: '',
-      phone: '',
-      project: '',
-      type: '',
-      status: 'Active'
-    });
-  
-    const [errors, setErrors] = useState<Partial<NewClientForm>>({});
-  
-    const validateForm = () => {
-      const newErrors: Partial<NewClientForm> = {};
-      
-      if (!formData.name.trim()) newErrors.name = 'Name is required';
-      if (!formData.email.trim()) newErrors.email = 'Email is required';
-      else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
-      if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
-      if (!formData.project.trim()) newErrors.project = 'Project is required';
-      if (!formData.type) newErrors.type = 'Client type is required';
-  
-      setErrors(newErrors);
-      return Object.keys(newErrors).length === 0;
-    };
-  
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (validateForm()) {
-        onSubmit(formData as NewClientForm);
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          project: '',
-          type: '',
-          status: 'Active'
-        });
-        setErrors({});
-        onClose();
-      }
-    };
-  
-    const handleChange = (field: keyof NewClientForm, value: string) => {
-      setFormData(prev => ({ ...prev, [field]: value }));
-      if (errors[field]) {
-        setErrors(prev => ({ ...prev, [field]: undefined }));
-      }
-    };
-  
-    if (!isOpen) return null;
-  
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-          <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">Add New Client</h2>
-            <button
-              onClick={onClose}
-              className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <X className="w-5 h-5 text-gray-500" />
-            </button>
-          </div>
-  
-          <form onSubmit={handleSubmit} className="p-6 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name *
-              </label>
-              <input
-                type="text"
-                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.name ? 'border-red-300' : 'border-gray-300'
-                }`}
-                placeholder="Enter full name"
-                value={formData.name}
-                onChange={(e) => handleChange('name', e.target.value)}
+interface ClientFormData {
+  companyName: string;
+  contactPersonName: string;
+  phone: string;
+  email: string;
+  industry: string;
+  paymentTerms: string;
+  addressLine1: string;
+  city: string;
+  state: string;
+  country: string;
+  zipCode: string;
+  website?: string;
+  notes?: string;
+}
+
+interface FormErrors {
+  [key: string]: string;
+}
+
+const AddClientModal: React.FC<AddClientModalProps> = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  loading = false
+}) => {
+  const [formData, setFormData] = useState<ClientFormData>({
+    companyName: '',
+    contactPersonName: '',
+    phone: '',
+    email: '',
+    industry: '',
+    paymentTerms: '',
+    addressLine1: '',
+    city: '',
+    state: '',
+    country: '',
+    zipCode: '',
+    website: '',
+    notes: ''
+  });
+
+  const [errors, setErrors] = useState<FormErrors>({});
+
+  // Industry options as specified in the document
+  const industryOptions = [
+    'Technology',
+    'Healthcare',
+    'Finance',
+    'Retail',
+    'Manufacturing',
+    'Real Estate'
+  ];
+
+  // Payment terms options as specified in the document
+  const paymentTermsOptions = [
+    'Net 30',
+    'Net 45',
+    'Net 60',
+    'Advance Payment',
+    'Milestone Based'
+  ];
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const handleDropdownChange = (name: string) => (value: string | number) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value.toString()
+    }));
+    
+    // Clear error when user selects an option
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    // Required field validation
+    if (!formData.companyName.trim()) {
+      newErrors.companyName = 'Company name is required';
+    }
+
+    if (!formData.contactPersonName.trim()) {
+      newErrors.contactPersonName = 'Contact person name is required';
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    if (!formData.industry) {
+      newErrors.industry = 'Industry is required';
+    }
+
+    if (!formData.paymentTerms) {
+      newErrors.paymentTerms = 'Payment terms are required';
+    }
+
+    if (!formData.addressLine1.trim()) {
+      newErrors.addressLine1 = 'Address line 1 is required';
+    }
+
+    if (!formData.city.trim()) {
+      newErrors.city = 'City is required';
+    }
+
+    if (!formData.state.trim()) {
+      newErrors.state = 'State is required';
+    }
+
+    if (!formData.country.trim()) {
+      newErrors.country = 'Country is required';
+    }
+
+    if (!formData.zipCode.trim()) {
+      newErrors.zipCode = 'Zip code is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (validateForm()) {
+      onSubmit(formData);
+    }
+  };
+
+ 
+const handleClose = () => {
+    if (!loading) {
+      setFormData({
+        companyName: '',
+        contactPersonName: '',
+        phone: '',
+        email: '',
+        industry: '',
+        paymentTerms: '',
+        addressLine1: '',
+        city: '',
+        state: '',
+        country: '',
+        zipCode: '',
+        website: '',
+        notes: ''
+      });
+      setErrors({});
+      onClose();
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <ModalBackdrop isOpen={isOpen} onClose={handleClose}>
+      <div className={clsx(
+        "inline-block w-full max-w-4xl p-6 my-8 text-left align-middle transition-all transform bg-white shadow-xl rounded-lg",
+        inter.className
+      )}>
+        {/* Modal Header */}
+        <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900">Add New Client</h2>
+          <button
+            onClick={handleClose}
+            disabled={loading}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Close modal"
+          >
+            <X className="w-5 h-5 text-gray-500" />
+          </button>
+        </div>
+
+        {/* Modal Body */}
+        <div className="max-h-[60vh] overflow-y-auto mt-6">
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* Company Information Section */}
+              <div className="md:col-span-2">
+                <h3 className="text-lg font-medium text-gray-900 mb-4 border-b border-gray-200 pb-2">
+                  Company Information
+                </h3>
+              </div>
+
+              <InputField
+                label="Company Name"
+                name="companyName"
+                value={formData.companyName}
+                onChange={handleInputChange}
+                placeholder="Enter company name"
+                mandatory
+                error={errors.companyName}
+                disabled={loading}
               />
-              {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
-            </div>
-  
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email Address *
-              </label>
-              <input
-                type="email"
-                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.email ? 'border-red-300' : 'border-gray-300'
-                }`}
-                placeholder="Enter email address"
-                value={formData.email}
-                onChange={(e) => handleChange('email', e.target.value)}
+
+              <InputField
+                label="Contact Person Name"
+                name="contactPersonName"
+                value={formData.contactPersonName}
+                onChange={handleInputChange}
+                placeholder="Enter contact person name"
+                mandatory
+                error={errors.contactPersonName}
+                disabled={loading}
               />
-              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
-            </div>
-  
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Phone Number *
-              </label>
-              <input
+
+              <InputField
+                label="Phone + Country Code"
+                name="phone"
                 type="tel"
-                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.phone ? 'border-red-300' : 'border-gray-300'
-                }`}
-                placeholder="(555-123-4567)"
                 value={formData.phone}
-                onChange={(e) => handleChange('phone', e.target.value)}
+                onChange={handleInputChange}
+                placeholder="+1 (555) 123-4567"
+                mandatory
+                error={errors.phone}
+                disabled={loading}
               />
-              {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
-            </div>
-  
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Project Name *
-              </label>
-              <input
-                type="text"
-                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.project ? 'border-red-300' : 'border-gray-300'
-                }`}
-                placeholder="Enter project name"
-                value={formData.project}
-                onChange={(e) => handleChange('project', e.target.value)}
+
+              <InputField
+                label="Email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="Enter email address"
+                mandatory
+                error={errors.email}
+                disabled={loading}
               />
-              {errors.project && <p className="text-red-500 text-xs mt-1">{errors.project}</p>}
-            </div>
-  
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Client Type *
-              </label>
-              <select
-                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.type ? 'border-red-300' : 'border-gray-300'
-                }`}
-                value={formData.type}
-                onChange={(e) => handleChange('type', e.target.value)}
-              >
-                <option value="">Select client type</option>
-                <option value="Residential Client">Residential Client</option>
-                <option value="Commercial Client">Commercial Client</option>
-              </select>
-              {errors.type && <p className="text-red-500 text-xs mt-1">{errors.type}</p>}
-            </div>
-  
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Status
-              </label>
-              <select
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={formData.status}
-                onChange={(e) => handleChange('status', e.target.value as 'Active' | 'Inactive')}
-              >
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-              </select>
-            </div>
-  
-            <div className="flex gap-3 pt-4">
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Add Client
-              </button>
+
+              <Dropdown
+                label="Industry"
+                name="industry"
+                value={formData.industry}
+                options={industryOptions}
+                onChange={handleDropdownChange('industry')}
+                placeholder="Select industry"
+                mandatory
+                error={errors.industry}
+                disabled={loading}
+              />
+
+              <Dropdown
+                label="Payment Terms"
+                name="paymentTerms"
+                value={formData.paymentTerms}
+                options={paymentTermsOptions}
+                onChange={handleDropdownChange('paymentTerms')}
+                placeholder="Select payment terms"
+                mandatory
+                error={errors.paymentTerms}
+                disabled={loading}
+              />
+
+              {/* Address Information Section */}
+              <div className="md:col-span-2 mt-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4 border-b border-gray-200 pb-2">
+                  Address Information
+                </h3>
+              </div>
+
+              <div className="md:col-span-2">
+                <InputField
+                  label="Address Line 1"
+                  name="addressLine1"
+                  value={formData.addressLine1}
+                  onChange={handleInputChange}
+                  placeholder="Enter street address"
+                  mandatory
+                  error={errors.addressLine1}
+                  disabled={loading}
+                />
+              </div>
+
+              <InputField
+                label="City"
+                name="city"
+                value={formData.city}
+                onChange={handleInputChange}
+                placeholder="Enter city"
+                mandatory
+                error={errors.city}
+                disabled={loading}
+              />
+
+              <InputField
+                label="State"
+                name="state"
+                value={formData.state}
+                onChange={handleInputChange}
+                placeholder="Enter state/province"
+                mandatory
+                error={errors.state}
+                disabled={loading}
+              />
+
+              <InputField
+                label="Country"
+                name="country"
+                value={formData.country}
+                onChange={handleInputChange}
+                placeholder="Enter country"
+                mandatory
+                error={errors.country}
+                disabled={loading}
+              />
+
+              <InputField
+                label="Zip Code"
+                name="zipCode"
+                value={formData.zipCode}
+                onChange={handleInputChange}
+                placeholder="Enter zip/postal code"
+                mandatory
+                error={errors.zipCode}
+                disabled={loading}
+              />
+
+              {/* Additional Information Section */}
+              <div className="md:col-span-2 mt-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4 border-b border-gray-200 pb-2">
+                  Additional Information
+                </h3>
+              </div>
+
+              <InputField
+                label="Website"
+                name="website"
+                type="url"
+                value={formData.website}
+                onChange={handleInputChange}
+                placeholder="https://www.example.com"
+                disabled={loading}
+              />
+
+              <div className="md:col-span-2">
+                <label className="text-[#7E7E7E] text-[14px] font-medium leading-tight pl-[10px]">
+                  Notes
+                </label>
+                <div className="h-3" />
+                <textarea
+                  name="notes"
+                  value={formData.notes}
+                  onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                  placeholder="Enter additional notes (optional)"
+                  disabled={loading}
+                  rows={4}
+                  className={clsx(
+                    inter.className,
+                    "w-full border border-gray-300 p-3 rounded text-[14px] font-medium leading-normal placeholder:normal focus:outline-none focus:border-primaryColor resize-vertical min-h-[100px]",
+                    loading && "opacity-50 cursor-not-allowed"
+                  )}
+                />
+              </div>
             </div>
           </form>
         </div>
-      </div>
-    );
-  };
 
-  export default AddClientModal;
+        {/* Modal Footer */}
+        <div className="flex items-center justify-end gap-3 pt-6 mt-6 border-t border-gray-200">
+          <button
+            type="button"
+            onClick={handleClose}
+            disabled={loading}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={loading}
+            className="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {loading ? (
+              <div className="flex items-center">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                Adding...
+              </div>
+            ) : (
+              'Add Client'
+            )}
+          </button>
+        </div>
+      </div>
+    </ModalBackdrop>
+  );
+};
+
+export default AddClientModal;

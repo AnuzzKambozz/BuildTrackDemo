@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { BTButton } from '@/app/components/buttons/BTButton';
-import FilterBlackIcon from '@/app/public/filter_black_icon.svg';
+// import FilterBlackIcon from '@/app/public/filter_black_icon.svg';
 import DownloadIcon from '@/app/public/export_white_icon.svg';
 
 export interface BudgetItem {
@@ -22,7 +22,7 @@ interface BudgetBreakdownTableProps {
 
 const BudgetBreakdownTable: React.FC<BudgetBreakdownTableProps> = ({ 
   budgetData = [],
-  onFilter,
+  // onFilter,
   onExport
 }) => {
   const formatCurrency = (amount: number) => {
@@ -42,7 +42,7 @@ const BudgetBreakdownTable: React.FC<BudgetBreakdownTableProps> = ({
       <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
         <h2 className="text-lg font-semibold text-gray-900">Budget Breakdown</h2>
         <div className="flex space-x-4">
-            <BTButton text='Filter' icon={FilterBlackIcon} type='outline_gray' onClick={onFilter} size='medium'/>
+            {/* <BTButton text='Filter' icon={FilterBlackIcon} type='outline_gray' onClick={onFilter} size='medium'/> */}
             <BTButton text='Export ' icon={DownloadIcon} type='primary' onClick={onExport} size='medium'/>
         </div>
       </div>

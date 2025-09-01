@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import BudgetHeader from '@/app/dashboard/budget_planning/components/budget_header';
 import BudgetSummary from './components/budget_summary';
 import BudgetBreakdownTable, { BudgetItem } from './components/budget_breakdown_table';
-import BudgetAdjustmentForm, { AdjustmentFormData } from './components/budget_adjustment_form';
+// import  { AdjustmentFormData } from './components/budget_adjustment_form';
 import { useHeaderConfig } from '@/app/context/HeaderContext';
 
 const BudgetPlanningDashboard: React.FC = () => {
@@ -96,15 +96,15 @@ const BudgetPlanningDashboard: React.FC = () => {
     // Navigate to detailed budget view
   };
 
-  const handleAdjustmentSubmit = (formData: AdjustmentFormData): void => {
-    console.log('Adjustment submitted:', formData);
-    // Submit adjustment request to API
-  };
+  // const handleAdjustmentSubmit = (formData: AdjustmentFormData): void => {
+  //   console.log('Adjustment submitted:', formData);
+  //   // Submit adjustment request to API
+  // };
 
-  const handleAdjustmentCancel = (): void => {
-    console.log('Adjustment cancelled');
-    // Reset form or close modal
-  };
+  // const handleAdjustmentCancel = (): void => {
+  //   console.log('Adjustment cancelled');
+  //   // Reset form or close modal
+  // };
 
   return (
     <div className="min-h-screen">
@@ -134,10 +134,10 @@ const BudgetPlanningDashboard: React.FC = () => {
                         onExport={handleExport}
                         />
 
-                        <BudgetAdjustmentForm
+                        {/* <BudgetAdjustmentForm
                         onSubmit={handleAdjustmentSubmit}
                         onCancel={handleAdjustmentCancel}
-                        />
+                        /> */}
                     </div>
                     </div>
                 </div>}

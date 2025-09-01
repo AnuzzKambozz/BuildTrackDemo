@@ -17,7 +17,7 @@ const BudgetSummary: React.FC<BudgetSummaryProps> = ({
   remaining = 335250,
   projectFinal = 894250,
   contingencyRemaining = 42000,
-  onBudgetDetailsClick
+  // onBudgetDetailsClick
 }) => {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -77,12 +77,12 @@ const BudgetSummary: React.FC<BudgetSummaryProps> = ({
             </div>
           </div>
           <div className={`h-[8px]  mb-[24px]`}/>
-          <button 
+          {/* <button 
             onClick={onBudgetDetailsClick}
             className="w-full mt-6 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
           >
             Budget Details
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

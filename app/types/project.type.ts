@@ -54,4 +54,6 @@ export interface Milestone {
   export interface ComponentProps {
     data: ProjectFormData;
     updateData: (data: Partial<ProjectFormData>) => void;
+    onAddClient?: () => void;
+    onAddTeamMember?: () => void;
   }

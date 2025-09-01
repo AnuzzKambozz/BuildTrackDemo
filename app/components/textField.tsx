@@ -51,7 +51,7 @@ const InputField: React.FC<InputFieldProps> = ({
         <label
           htmlFor={name}
           className={clsx(
-            "text-[#7E7E7E] text-[16px] font-medium leading-tight pl-[10px]",
+            "text-[#7E7E7E] text-[14px] font-medium leading-tight pl-[10px]",
             labelClassName
           )}
         >
@@ -78,7 +78,7 @@ const InputField: React.FC<InputFieldProps> = ({
           disabled={disabled}
           className={clsx(
             inter.className,
-            "w-full border p-3 rounded text-base font-medium leading-normal h-12 placeholder:normal pr-10 focus:outline-none",
+            "w-full border p-3 rounded text-[14px] font-medium leading-normal h-12 placeholder:normal pr-10 focus:outline-none",
             error
               ? "border-red-500 focus:border-red-500"
               : "focus:border-primaryColor",

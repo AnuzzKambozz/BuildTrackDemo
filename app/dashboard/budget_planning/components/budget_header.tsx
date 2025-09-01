@@ -17,13 +17,13 @@ interface BudgetHeaderProps {
 
 const BudgetHeader: React.FC<BudgetHeaderProps> = ({ 
   title = "Budget Planning", 
-  subtitle = "Lorem Ipsum is a dummy text",
+  subtitle = "Comprehensive budget planning with cost tracking and variance analysis",
   selectedProject,
   onProjectChange,
   projects = ["Spethman Renovation", "Downtown Office", "Warehouse Project"],
-  activeTab,
-  onTabChange,
-  tabs = ['Budget Planning', 'Cost Tracking', 'Invoices', 'Reports']
+  // activeTab,
+  // onTabChange,
+  // tabs = ['Budget Planning', 'Cost Tracking', 'Invoices', 'Reports']
 }) => {
   return (
     <div className="bg-white border-b border-gray-200 px-6 pt-4 rounded-lg shadow-sm">
@@ -48,7 +48,7 @@ const BudgetHeader: React.FC<BudgetHeaderProps> = ({
 
       {/* Navigation Tabs */}
       <div className="flex space-x-8 mt-6">
-        {tabs.map((tab) => (
+        {/* {tabs.map((tab) => (
           <button
             key={tab}
             onClick={() => onTabChange(tab)}
@@ -60,7 +60,7 @@ const BudgetHeader: React.FC<BudgetHeaderProps> = ({
           >
             {tab}
           </button>
-        ))}
+        ))} */}
       </div>
     </div>
   );

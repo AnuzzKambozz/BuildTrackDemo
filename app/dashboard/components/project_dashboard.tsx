@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import {   MoreVertical } from 'lucide-react';
 import {  ProjectDashboardProps } from '../types/dashborad';
 import { inter } from '@/app/fonts';
@@ -10,8 +10,10 @@ import DocumentsIcon from "@/app/public/documents_icon.svg"
 import AddCircleIcon from '@/app/public/add_circle.svg'; // Assuming you have an SVG icon for Plus
 import AddBlueCircleIcon from '@/app/public/add_circle_blue_icon.svg'; // Assuming you have an SVG icon for Plus
 import Avatar from '@/app/components/Avatar/Avatar';
-
-
+import { useRouter } from "next/navigation";
+import AddTaskModal from '../tasks/components/addtaskmodel';
+import { sampleAssignees, sampleMilestones, sampleProjects } from '../tasks/utils/sampale_data';
+import EmployeeModal from '@/app/components/resource_management/add_member_modal';
 
 
 
@@ -26,6 +28,9 @@ import Avatar from '@/app/components/Avatar/Avatar';
     teamMembers,
     insights
   }) => {
+
+      const [showAddMemberModal, setShowAddMemberModal] = useState(false);
+    
     const getTaskBorderColor = (type: string) => {
       switch (type) {
         case 'overdue': return 'border-l-red-400';
@@ -67,7 +72,10 @@ import Avatar from '@/app/components/Avatar/Avatar';
         default: return 'border-r-gray-400';
       }
     };
-  
+    const [addTaskModalOpen, setAddTaskModalOpen] = useState<boolean>(false);
+
+    
+    const router = useRouter();  
     return (
       <div className="min-h-screen">
         {/* Header */}
@@ -83,11 +91,16 @@ import Avatar from '@/app/components/Avatar/Avatar';
               <p className={`${inter.className} antialiased text-[14px] font-medium text-[#525252]`}>{projectAddress}</p>
             </div>
             <div className="flex gap-3 flex-wrap">
-                <BTButton text="Document" icon={DocumentsIcon} type='outline_gray'/>
-                <BTButton text="Settings" icon={SettingsIcon} type='outline_gray'/>
+                <BTButton text="Document" icon={DocumentsIcon} type='outline_gray' onClick={()=>{
+                   router.push(`/dashboard/documents`);
+                }}/>
+                <BTButton text="Settings" icon={SettingsIcon} type='outline_gray' onClick={()=>{
+                    router.push(`/dashboard/settings`);
+                }}/>
                 <BTButton text='Add Task' icon={AddCircleIcon} loading={false} size='medium' onClick={() => {
                   // Perform login logic here 
                   console.log("Add Tasks clicked");
+                  setAddTaskModalOpen(true);
 
                 }  
 
@@ -135,7 +148,8 @@ import Avatar from '@/app/components/Avatar/Avatar';
                 ))}
               </div>
               <div className='flex flex-row items-center justify-center pt-4'>
-              <button className={`${inter.className} antialiased text-blue-600 text-[13px] font-medium hover:underline`}>
+              <button className={`${inter.className} antialiased text-blue-600 text-[13px] font-medium hover:underline`} onClick={()=>{
+                router.push(`/dashboard/tasks`);}}>
                 View All
               </button>
               </div>
@@ -146,7 +160,8 @@ import Avatar from '@/app/components/Avatar/Avatar';
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className={`${inter.className} antialiased text-[18px] font-semibold text-[#171E34]`}>This Week&rsquo;s Schedule</h2>
-                <button className={`${inter.className} antialiased text-blue-600 text-[13px] font-medium hover:underline`}>
+                <button className={`${inter.className} antialiased text-blue-600 text-[13px] font-medium hover:underline`} onClick={()=>{
+                  router.push(`/dashboard/schedule`);}}>
                   View Calendar
                 </button>
               </div>
@@ -228,7 +243,9 @@ import Avatar from '@/app/components/Avatar/Avatar';
             <div className="bg-white rounded-lg shadow-sm p-6 h-[558px]">
               <div className="flex justify-between items-center mb-4">
                 <h2 className={`${inter.className} antialiased text-[#171E34] font-semibold text-[18px] mb-4`}>Project Team</h2>
-                <button className={`${inter.className} antialiased text-blue-600 text-[13px] font-medium hover:underline`}>
+                <button className={`${inter.className} antialiased text-blue-600 text-[13px] font-medium hover:underline`} onClick={()=>{
+                  router.push(`/dashboard/resources_management`);
+                }}>
                   Manage Team
                 </button>
               </div>
@@ -261,13 +278,33 @@ import Avatar from '@/app/components/Avatar/Avatar';
                 ))}
               </div>
               <div className='flex flex-col items-center justify-end my-auto mt-5'>
-              <BTButton  text="Add New Member" icon= {AddBlueCircleIcon} type="outline_blue"/>
+              <BTButton  text="Add New Member" icon= {AddBlueCircleIcon} type="outline_blue" onClick={() => setShowAddMemberModal(true)}/>
               </div>
-             
-              
+
+
             </div>
           </div>
         </div>
+
+        <AddTaskModal
+          isOpen={addTaskModalOpen}
+          onClose={() => setAddTaskModalOpen(false)}
+          projects={sampleProjects}
+          milestones={sampleMilestones}
+          assignees={sampleAssignees}
+          onSubmit={()=> {}}
+          columnId={null}
+        />
+
+         {/* Employee Modal */}
+        <EmployeeModal
+          isOpen={showAddMemberModal}
+          onClose={() => setShowAddMemberModal(false)}
+          onSubmit={() => {
+            // Handle new employee addition logic here
+            setShowAddMemberModal(false);
+          }}
+        />
       </div>
     );
   };
