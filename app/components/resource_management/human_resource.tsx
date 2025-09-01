@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { ChevronDown, Plus, Search, Filter, MoreHorizontal } from 'lucide-react';
+import { ChevronDown, Search, Filter, MoreHorizontal } from 'lucide-react';
 import EmployeeModal from './add_member_modal';
 import { useState } from 'react';
 import { BTButton } from '@/app/components/buttons/BTButton';
