@@ -2,26 +2,21 @@
 
 import { ExpenseModel, ExpenseItem } from "@/app/models/common";
 import {Trash2} from 'lucide-react';
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';//useCallback
 import  Dropdown  from "@/app/components/dropdowns/dropdown_new";
 
 import ModalBackdrop from '@/app/components/modal_backdrop';
-// import InputField from '@/app/components/textField';
+import InputField from '@/app/components/textField';
 import TextAreaField from '@/app/components/textAreaField';
 import {BTButton} from '@/app/components/buttons/BTButton';
 
-// Define proper types for unit and category options
-interface UnitOption {
+// Define proper types for unit properties
+interface UnitProperties {
   value: string;
   label: string;
   type: 'discrete' | 'area' | 'linear' | 'volume' | 'weight' | 'time' | 'lumpsum';
   step: number;
   min: number;
-}
-
-interface CategoryOption {
-  value: string;
-  label: string;
 }
 
 interface ExpenseModalProps {
@@ -37,88 +32,42 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, onSubmit, 
       description: string;
       project: string;
       category: string; // Fixed: Remove undefined from union
-      items: ExpenseItem[];   
+      purchaseOrder: string
+      invoiceId: string;
+      invoiceAmount:number;
+      invoiceDate:string;
+      items: ExpenseItem[];  
+      invoiceDocument: string; 
       status: 'pending' | 'approved' | 'rejected';
       amount: number; // Added: Missing from interface
       submittedBy: string; // Added: Missing from interface
     }>({
       description: '',
       project: '',
-      category: 'Materials', // Fixed: Always have a default value
+      category: 'Purchase Order', // Fixed: Always have a default value
+      purchaseOrder: '',
+      invoiceId:'',
+      invoiceAmount:0,
+      invoiceDate:"",
+      invoiceDocument:'',
       items: [],
       status: 'pending',
       amount: 0, // Added: Default value
       submittedBy: '', // Added: Default value
     });
-
-    // Define categories and units with proper typing and memoization
-    const categories: CategoryOption[] = useMemo(() => [
-      { value: 'Materials', label: 'Materials' },
-      { value: 'Tools', label: 'Tools' },
-      { value: 'Safety', label: 'Safety' },
-      { value: 'Hardware', label: 'Hardware' },
-      { value: 'Service', label: 'Service' },
-      { value: 'Labor', label: 'Labor' },
-      { value: 'Equipment', label: 'Equipment' },
-      { value: 'General Conditions', label: 'General Conditions' },
-      { value: 'Other', label: 'Other' }
-    ], []);
-    
-    const units: UnitOption[] = useMemo(() => [
-      { value: 'pcs', label: 'pcs', type: 'discrete', step: 1, min: 1 },
-      { value: 'sq ft', label: 'sq ft', type: 'area', step: 0.01, min: 0.01 },
-      { value: 'sq m', label: 'sq m', type: 'area', step: 0.01, min: 0.01 },
-      { value: 'lin ft', label: 'lin ft', type: 'linear', step: 0.01, min: 0.01 },
-      { value: 'lin m', label: 'lin m', type: 'linear', step: 0.01, min: 0.01 },
-      { value: 'cu ft', label: 'cu ft', type: 'volume', step: 0.01, min: 0.01 },
-      { value: 'cu m', label: 'cu m', type: 'volume', step: 0.01, min: 0.01 },
-      { value: 'lbs', label: 'lbs', type: 'weight', step: 0.1, min: 0.1 },
-      { value: 'kg', label: 'kg', type: 'weight', step: 0.1, min: 0.1 },
-      { value: 'hrs', label: 'hrs', type: 'time', step: 0.25, min: 0.25 },
-      { value: 'days', label: 'days', type: 'time', step: 0.5, min: 0.5 },
-      { value: 'ls', label: 'ls (lump sum)', type: 'lumpsum', step: 1, min: 1 }
-    ], []);
-
-    const projectOptions = [
-        { value: 'Spethman Renovation', label: 'Spethman Renovation' },
-        { value: 'Steven Kitchen', label: 'Steven Kitchen' },
-        { value: 'Asian Zone Spec Home', label: 'Asian Zone Spec Home' },
-        { value: 'Bruke Roof Siding', label: 'Bruke Roof Siding' },
-    ];
-
-    // Helper functions with proper typing
-    const getUnitProperties = useCallback((unitValue: string): UnitOption => {
-      return units.find(u => u.value === unitValue) || units[0];
-    }, [units]);
-
-    const formatQuantityPlaceholder = useCallback((unitValue: string): string => {
-      const unit = getUnitProperties(unitValue);
-      switch (unit.type) {
-        case 'discrete':
-          return 'e.g., 10 pieces';
-        case 'area':
-          return 'e.g., 150.25';
-        case 'linear':
-          return 'e.g., 25.5';
-        case 'volume':
-          return 'e.g., 12.75';
-        case 'weight':
-          return 'e.g., 50.5';
-        case 'time':
-          return unit.value === 'hrs' ? 'e.g., 8.5' : 'e.g., 3.5';
-        case 'lumpsum':
-          return '1 (fixed)';
-        default:
-          return 'Enter quantity';
-      }
-    }, [getUnitProperties]);
   
     useEffect(() => {
       if (expense && mode === 'edit') {
+        console.log(expense)
         setFormData({
           description: expense.description,
           project: expense.project,
-          category: expense.category || "",
+          category: "Purchase Order",
+          purchaseOrder: expense.purchaseOrder || '',
+          invoiceId: expense.invoiceId || '',
+          invoiceAmount: expense.invoiceAmount || 0,
+          invoiceDate: expense.invoiceDate || '',
+          invoiceDocument: expense.invoiceDocument || '',
           items: expense.items as ExpenseItem[],
           status: expense.status,
           amount: 0, // You'll need to calculate this from items or add to ExpenseModel
@@ -128,16 +77,13 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, onSubmit, 
         setFormData({
           description: '',
           project: '',
-          category: 'Materials',
-          items: [{
-      id: 1,
-      name: '',
-      category: 'Materials',
-      quantity: 1,
-      unit: 'pcs',
-      costPer: 0,
-      subTotal: 0
-    }],
+          category: 'Purchase Order',
+          purchaseOrder: '',
+          invoiceId:  '',
+          invoiceAmount:  0,
+          invoiceDate: '',
+          invoiceDocument:  '',
+          items: [],
           status: 'pending',
           amount: 0,
           submittedBy: '',
@@ -152,87 +98,166 @@ const ExpenseModal: React.FC<ExpenseModalProps> = ({ isOpen, onClose, onSubmit, 
           description: formData.description,
           project: formData.project,
           category: formData.category,
+          purchaseOrder: formData.purchaseOrder || '',
+          invoiceId: formData.invoiceId || '',
+          invoiceAmount: formData.invoiceAmount || 0,
+          invoiceDate: formData.invoiceDate || '',
+          invoiceDocument: formData.invoiceDocument || '',
           items: formData.items,
           status: formData.status,
-          amount: totalEstimate
+          amount: formData.invoiceAmount
         });
       } else {
         onSubmit({
           description: formData.description,
           project: formData.project,
           category: formData.category,
+          purchaseOrder: formData.purchaseOrder || '',
+          invoiceId: formData.invoiceId || '',
+          invoiceAmount: formData.invoiceAmount || 0,
+          invoiceDate: formData.invoiceDate || '',
+          invoiceDocument: formData.invoiceDocument || '',
           items: formData.items,
           submittedBy: "Anuj Kamboj",
-          amount: totalEstimate,
+          amount: formData.invoiceAmount,
           status: formData.status,
           date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
         });
       }
       onClose();
     };
-   const totalEstimate = formData.items.reduce((sum, item) => sum + item.subTotal, 0);
+//    const totalEstimate = formData.items.reduce((sum, item) => sum + item.subTotal, 0);
 
-const addItem = useCallback(() => {
-  const newId = Math.max(...formData.items.map(item => item.id), 0) + 1;
-  setFormData(prev => ({
-    ...prev,
-    items: [...prev.items, {
-      id: newId,
-      name: '',
-      category: 'Materials',
-      quantity: 1,
-      unit: 'pcs',
-      costPer: 0,
-      subTotal: 0
-    }]
-  }));
-}, [formData.items]);
+//      const categories = [
+//     { value: 'Materials', label: 'Materials' },
+//     { value: 'Tools', label: 'Tools' },
+//     { value: 'Safety', label: 'Safety' },
+//     { value: 'Hardware', label: 'Hardware' },
+//     { value: 'Service', label: 'Service' },
+//     { value: 'Labor', label: 'Labor' },
+//     { value: 'Equipment', label: 'Equipment' },
+//     { value: 'General Conditions', label: 'General Conditions' },
+//     { value: 'Other', label: 'Other' }
+//   ];
 
-const removeItem = useCallback((id: number) => {
-  setFormData(prev => ({
-    ...prev,
-    items: prev.items.filter(item => item.id !== id)
-  }));
-}, []);
+const purchaseOrders = [
+    { value: 'PO-2024-001', label: 'PO-2024-001' },
+    { value: 'PO-2024-002', label: 'PO-2024-002' },
+    { value: 'PO-2024-003', label: 'PO-2024-003' },
+    { value: 'PO-2024-004', label: 'PO-2024-004' },
+  ];
+  
+//   const units = [
+//     { value: 'pcs', label: 'pcs', type: 'discrete', step: 1, min: 1 },
+//     { value: 'sq ft', label: 'sq ft', type: 'area', step: 0.01, min: 0.01 },
+//     { value: 'sq m', label: 'sq m', type: 'area', step: 0.01, min: 0.01 },
+//     { value: 'lin ft', label: 'lin ft', type: 'linear', step: 0.01, min: 0.01 },
+//     { value: 'lin m', label: 'lin m', type: 'linear', step: 0.01, min: 0.01 },
+//     { value: 'cu ft', label: 'cu ft', type: 'volume', step: 0.01, min: 0.01 },
+//     { value: 'cu m', label: 'cu m', type: 'volume', step: 0.01, min: 0.01 },
+//     { value: 'lbs', label: 'lbs', type: 'weight', step: 0.1, min: 0.1 },
+//     { value: 'kg', label: 'kg', type: 'weight', step: 0.1, min: 0.1 },
+//     { value: 'hrs', label: 'hrs', type: 'time', step: 0.25, min: 0.25 },
+//     { value: 'days', label: 'days', type: 'time', step: 0.5, min: 0.5 },
+//     { value: 'ls', label: 'ls (lump sum)', type: 'lumpsum', step: 1, min: 1 }
+//   ];
 
-const updateItem = useCallback((id: number, field: keyof ExpenseItem, value: string | number) => {
-  setFormData(prev => ({
-    ...prev,
-    items: prev.items.map(item => {
-      if (item.id === id) {
-        const updatedItem = { ...item, [field]: value };
+  const projectOptions = [
+      { value: 'Spethman Renovation', label: 'Spethman Renovation' },
+      { value: 'Steven Kitchen', label: 'Steven Kitchen' },
+      { value: 'Asian Zone Spec Home', label: 'Asian Zone Spec Home' },
+      { value: 'Bruke Roof Siding', label: 'Bruke Roof Siding' },
+    ];
+  
+    // Helper functions
+//   const getUnitProperties = (unitValue: string) => {
+//     return units.find(u => u.value === unitValue) || units[0];
+//   };
+
+//   const formatQuantityPlaceholder = (unitValue: string) => {
+//     const unit = getUnitProperties(unitValue);
+//     switch (unit.type) {
+//       case 'discrete':
+//         return 'e.g., 10 pieces';
+//       case 'area':
+//         return 'e.g., 150.25';
+//       case 'linear':
+//         return 'e.g., 25.5';
+//       case 'volume':
+//         return 'e.g., 12.75';
+//       case 'weight':
+//         return 'e.g., 50.5';
+//       case 'time':
+//         return unit.value === 'hrs' ? 'e.g., 8.5' : 'e.g., 3.5';
+//       case 'lumpsum':
+//         return '1 (fixed)';
+//       default:
+//         return 'Enter quantity';
+//     }
+//   };
+
+
+// const addItem = useCallback(() => {
+//   const newId = Math.max(...formData.items.map(item => item.id), 0) + 1;
+//   setFormData(prev => ({
+//     ...prev,
+//     items: [...prev.items, {
+//       id: newId,
+//       name: '',
+//       category: 'Materials',
+//       quantity: 1,
+//       unit: 'pcs',
+//       costPer: 0,
+//       subTotal: 0
+//     }]
+//   }));
+// }, [formData.items]);
+
+// const removeItem = useCallback((id: number) => {
+//   setFormData(prev => ({
+//     ...prev,
+//     items: prev.items.filter(item => item.id !== id)
+//   }));
+// }, []);
+
+// const updateItem = useCallback(<K extends keyof ExpenseItem>(id: number, field: K, value: ExpenseItem[K]) => {
+//   setFormData(prev => ({
+//     ...prev,
+//     items: prev.items.map(item => {
+//       if (item.id === id) {
+//         const updatedItem = { ...item, [field]: value };
         
-        // Handle unit change - adjust quantity if needed
-        if (field === 'unit') {
-          const unitProps = getUnitProperties(value as string);
-          if (unitProps.type === 'lumpsum') {
-            updatedItem.quantity = 1;
-          } else if (unitProps.type === 'discrete' && updatedItem.quantity % 1 !== 0) {
-            updatedItem.quantity = Math.ceil(updatedItem.quantity);
-          }
-        }
+//         // Handle unit change - adjust quantity if needed
+//         if (field === 'unit') {
+//           const unitProps = getUnitProperties(value as string);
+//           if (unitProps.type === 'lumpsum') {
+//             updatedItem.quantity = 1;
+//           } else if (unitProps.type === 'discrete' && updatedItem.quantity % 1 !== 0) {
+//             updatedItem.quantity = Math.ceil(updatedItem.quantity);
+//           }
+//         }
         
-        // Handle quantity validation based on unit type
-        if (field === 'quantity') {
-          const unitProps = getUnitProperties(updatedItem.unit);
-          if (unitProps.type === 'discrete') {
-            updatedItem.quantity = Math.max(1, Math.round(value as number));
-          } else if (unitProps.type === 'lumpsum') {
-            updatedItem.quantity = 1;
-          } else {
-            updatedItem.quantity = Math.max(unitProps.min, value as number);
-          }
-        }
+//         // Handle quantity validation based on unit type
+//         if (field === 'quantity') {
+//           const unitProps = getUnitProperties(updatedItem.unit);
+//           if (unitProps.type === 'discrete') {
+//             updatedItem.quantity = Math.max(1, Math.round(value as number));
+//           } else if (unitProps.type === 'lumpsum') {
+//             updatedItem.quantity = 1;
+//           } else {
+//             updatedItem.quantity = Math.max(unitProps.min, value as number);
+//           }
+//         }
         
-        if (field === 'quantity' || field === 'costPer' || field === 'unit') {
-          updatedItem.subTotal = Number(updatedItem.quantity) * Number(updatedItem.costPer);
-        }
-        return updatedItem;
-      }
-      return item;
-    })
-  }));
-}, [getUnitProperties]); // Added missing dependency
+//         if (field === 'quantity' || field === 'costPer' || field === 'unit') {
+//           updatedItem.subTotal = Number(updatedItem.quantity) * Number(updatedItem.costPer);
+//         }
+//         return updatedItem;
+//       }
+//       return item;
+//     })
+//   }));
+// }, []);
 
     if (!isOpen) return null;
   
@@ -273,22 +298,48 @@ const updateItem = useCallback((id: number, field: keyof ExpenseItem, value: str
                 />
 
                 <Dropdown
-                  label="Category"
-                  name="category"
-                  placeholder="Select Category"
-                  options={categories}
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: String(e) })}
+                  label="Purchase Order"
+                  name="purchaseOrder"
+                  placeholder="Select Purchase Order"
+                  options={purchaseOrders}
+                  value={formData.purchaseOrder}
+                  onChange={(e) => setFormData({ ...formData, purchaseOrder: String(e) })}
                   mandatory
                 />
-              {/* <InputField
-                label="Category"
-                name="category"
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                placeholder="Contact person"
-              /> */}
+              <InputField
+                label="Invoice Number"
+                name="invoiceId"
+                value={formData.invoiceId}
+                onChange={(e) => setFormData({ ...formData, invoiceId: e.target.value })}
+                placeholder="# Invoice Number"
+              />
 
+            <InputField
+                label="Invoice Amount"
+                name="invoiceAmount"
+                value={formData.invoiceAmount}
+                onChange={(e) => setFormData({ ...formData, invoiceAmount: Number(e.target.value) })}
+                placeholder="Enter Invoice Amount"
+                type="number"
+              />
+
+               <InputField
+                label="Invoice Date"
+                name="invoiceDate"
+                value={formData.invoiceDate}
+                onChange={(e) => setFormData({ ...formData, invoiceDate: e.target.value })}
+                placeholder="Enter Invoice Date"
+                type="date"
+              />
+
+            <InputField
+                label="Attach Invoice File"
+                name="invoiceDocument"
+                value={""}
+                onChange={(e) => setFormData({ ...formData, invoiceDocument: e.target.value })}
+                placeholder="Attach..."
+                type="file"
+              />                
             </div>
             
 
@@ -305,7 +356,7 @@ const updateItem = useCallback((id: number, field: keyof ExpenseItem, value: str
           </div>
 
           {/* Items Table */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-800">Expense Items</h3>
 
@@ -347,30 +398,17 @@ const updateItem = useCallback((id: number, field: keyof ExpenseItem, value: str
                 </tbody>
               </table>
             </div>
-          </div>
+          </div> */}
 
           {/* Summary */}
-          <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-lg mb-6">
+          {/* <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-lg mb-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-gray-800">Total Estimate</h3>
               <div className="text-3xl font-bold text-blue-600">
                 ${totalEstimate.toFixed(2)}
               </div>
             </div>
-            {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
-              {categories.map(category => {
-                const categoryTotal = items
-                  .filter(item => item.category === category.value)
-                  .reduce((sum, item) => sum + item.subTotal, 0);
-                return categoryTotal > 0 ? (
-                  <div key={category.value} className="flex justify-between">
-                    <span>{category.label}:</span>
-                    <span className="font-medium">${categoryTotal.toFixed(2)}</span>
-                  </div>
-                ) : null;
-              })}
-            </div> */}
-          </div>
+          </div> */}
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-3 pt-4 border-t border-gray-200">
@@ -423,18 +461,18 @@ const ItemRow = React.memo(({
   items, 
   getUnitProperties, 
   formatQuantityPlaceholder, 
-  // categories, 
+//   categories,
   units 
 }: { 
   item: ExpenseItem; 
   index: number; 
-  updateItem: (id: number, field: keyof ExpenseItem, value: string | number) => void;
+  updateItem: <K extends keyof ExpenseItem>(id: number, field: K, value: ExpenseItem[K]) => void;
   removeItem: (id: number) => void;
   items: ExpenseItem[];
-  getUnitProperties: (unitValue: string) => UnitOption;
+  getUnitProperties: (unitValue: string) => UnitProperties;
   formatQuantityPlaceholder: (unitValue: string) => string;
-  categories: CategoryOption[];
-  units: UnitOption[];
+  categories: Array<{ value: string; label: string }>;
+  units: UnitProperties[];
 }) => {
   const unitProps = getUnitProperties(item.unit);
   
@@ -465,9 +503,9 @@ const ItemRow = React.memo(({
         <input
           type="number"
           value={item.quantity}
-          onChange={(e) => updateItem(item.id, 'quantity', parseFloat(e.target?.value) || 0)}
-        //   min={unitProps.min}
-        //   step={unitProps.step}
+          onChange={(e) => updateItem(item.id, 'quantity', parseFloat(e.target.value) || 0)}
+          min={unitProps.min}
+          step={unitProps.step}
           disabled={unitProps.type === 'lumpsum'}
           placeholder={formatQuantityPlaceholder(item.unit)}
           className={`w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500 ${
@@ -490,16 +528,16 @@ const ItemRow = React.memo(({
       <td className="p-2">
         <input
           type="number"
-          value={item?.costPer}
-          onChange={(e) => updateItem(item.id, 'costPer', parseFloat(e.target?.value) || 0)}
-        //   min="0"
-        //   step="0.01"
+          value={item.costPer}
+          onChange={(e) => updateItem(item.id, 'costPer', parseFloat(e.target.value) || 0)}
+          min={0}
+          step={0.01}
           placeholder={unitProps.type === 'lumpsum' ? 'Total cost' : 'Cost per unit'}
           className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500"
         />
       </td>
       <td className="p-2 text-right font-medium">
-        ${item.subTotal?.toFixed(2) || 0}
+        ${item.subTotal?.toFixed(2) || '0.00'}
       </td>
       <td className="p-2 text-center">
         <button

@@ -1,14 +1,17 @@
 "use client";
 
 import FilterDropdown from "@/app/components/dropdowns/title_dropdown";
-import { Calendar, FileText, TrendingUp, DollarSign, Plus, Search } from "lucide-react";
+import { Calendar, FileText, TrendingUp, DollarSign, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import ExpenseModal from "./components/expense_modal";
+import POExpenseModal from "./components/po_expense_modal";
+
 import StatCard from "./components/status_card";
 import { ExpenseModel, ExpenseSummaryModel } from "@/app/models/common";
 import ExpenseRow from "./components/expense_row";
 import { useHeaderConfig } from '@/app/context/HeaderContext';
-
+import { BTButton } from '@/app/components/buttons/BTButton'; 
+import  AddCircleIcon  from '@/app/public/add_circle.svg';
 
 const ExpenseTrackingDashboard: React.FC = () => {
 
@@ -35,6 +38,7 @@ const initialExpenses: ExpenseModel[] = [
       description: 'Lumber for framing',
       project: 'Spethman Renovation',
       category: 'Materials',
+      items: [],
       amount: 4250.00,
       date: 'Mar 28 2025',
       submittedBy: 'Daniel James',
@@ -46,6 +50,8 @@ const initialExpenses: ExpenseModel[] = [
       project: "Steven's Kitchen",
       category: 'Equipments',
       amount: 4250.00,
+            items: [],
+
       date: 'Mar 28 2025',
       submittedBy: 'Steven Robert',
       status: 'pending'
@@ -56,6 +62,8 @@ const initialExpenses: ExpenseModel[] = [
       project: 'Nerolac Custom Home',
       category: 'Materials',
       amount: 4250.00,
+            items: [],
+
       date: 'Mar 28 2025',
       submittedBy: 'Juleha Anana',
       status: 'rejected'
@@ -66,6 +74,8 @@ const initialExpenses: ExpenseModel[] = [
       project: 'Bruke Roof Siding',
       category: 'Labor',
       amount: 4250.00,
+            items: [],
+
       date: 'Mar 28 2025',
       submittedBy: 'Carlos Lopez',
       status: 'approved'
@@ -76,6 +86,8 @@ const initialExpenses: ExpenseModel[] = [
       project: 'Asian Zone Spec Home',
       category: 'Materials',
       amount: 8460.00,
+       items: [],
+
       date: 'Mar 28 2025',
       submittedBy: 'Elite Electric',
       status: 'approved'
@@ -102,6 +114,8 @@ const initialExpenses: ExpenseModel[] = [
     const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
     const [editingExpense, setEditingExpense] = useState<ExpenseModel | undefined>(undefined);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [isPOModalOpen, setIsPOModalOpen] = useState<boolean>(false);
+
   
     // Calculate summary data dynamically
     const summary: ExpenseSummaryModel = {
@@ -147,12 +161,24 @@ const initialExpenses: ExpenseModel[] = [
       setEditingExpense(undefined);
       setIsModalOpen(true);
     };
+
+    const handleAddPOExpense = (): void => {
+      setModalMode('add');
+      setEditingExpense(undefined);
+      setIsPOModalOpen(true);
+    };
   
     const handleEditExpense = (expense: ExpenseModel): void => {
       setModalMode('edit');
       setEditingExpense(expense);
+      if (expense.category === "Purchase Order"){
+        setIsPOModalOpen(true);
+      } else {
       setIsModalOpen(true);
+      }
     };
+
+    
   
     const handleSubmitExpense = (expenseData: ExpenseModel | Omit<ExpenseModel, 'id'>): void => {
       if (modalMode === 'edit' && 'id' in expenseData) {
@@ -217,13 +243,11 @@ const initialExpenses: ExpenseModel[] = [
                   <h1 className="text-2xl font-semibold text-gray-900">Expense Tracking</h1>
                   <p className="text-gray-600">Lorem Ipsum is a dummy text to fill space</p>
                 </div>
-                <button
-                  onClick={handleAddExpense}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  <Plus className="w-4 h-4" />
-                  Add New Expense
-                </button>
+                <div className="flex space-x-4">
+                  <BTButton text='Add Purchase Order Expense' icon={AddCircleIcon} loading={false} size='medium' onClick={handleAddPOExpense}  />
+                  <BTButton text='Add General Expense' icon={AddCircleIcon} loading={false} size='medium' onClick={handleAddExpense}  />
+                </div>
+                  
               </div>
             </div>
   
@@ -383,6 +407,15 @@ const initialExpenses: ExpenseModel[] = [
           <ExpenseModal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)}
+            onSubmit={handleSubmitExpense}
+            expense={editingExpense}
+            mode={modalMode}
+          />
+
+          {/*PO  Expense Modal */}
+          <POExpenseModal
+            isOpen={isPOModalOpen}
+            onClose={() => setIsPOModalOpen(false)}
             onSubmit={handleSubmitExpense}
             expense={editingExpense}
             mode={modalMode}

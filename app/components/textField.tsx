@@ -18,8 +18,10 @@ interface InputFieldProps {
   className?: string;
   labelClassName?: string;
   highlight?: boolean;
-  min?: string;
-  max?: string;
+  min?: number | string | undefined;
+  max?: number | string | undefined;
+  step?: number | string | undefined;
+  title?: string | undefined;
   mandatory?: boolean;
   error?: string; // 👈 add error prop
 }
@@ -39,6 +41,8 @@ const InputField: React.FC<InputFieldProps> = ({
   highlight = false,
   min,
   max,
+  step,
+  title,
   mandatory = false,
   error, // 👈 receive error prop
 }) => {
@@ -65,8 +69,9 @@ const InputField: React.FC<InputFieldProps> = ({
 
       <div className="relative">
         <input
-          min={type === "date" ? min : undefined}
-          max={type === "date" ? max : undefined}
+          min={min}
+          max={max}
+          step={step}
           type={isPassword && showPassword ? "text" : type}
           name={name}
           id={name}
@@ -76,6 +81,7 @@ const InputField: React.FC<InputFieldProps> = ({
           onFocus={onFocus}
           placeholder={placeholder}
           disabled={disabled}
+          title={title}
           className={clsx(
             inter.className,
             "w-full border p-3 rounded text-[14px] font-medium leading-normal h-12 placeholder:normal pr-10 focus:outline-none",

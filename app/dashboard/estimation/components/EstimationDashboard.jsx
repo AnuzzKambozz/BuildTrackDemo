@@ -5,6 +5,7 @@
 
 import { useState, useEffect, act } from 'react';
 import FilterDropdown from '@/app/components/dropdowns/title_dropdown';
+import AddEstimationModal from './add_estimation_modal';
 
 import { 
   Plus, 
@@ -32,9 +33,9 @@ const EstimationDashboard = () => {
   const [typeFilter, setTypeFilter] = useState('all');
   const [estimates, setEstimates] = useState([]);
   const [activeTab, setActiveTab] = useState('Estimates');
-
+  const [showAddEstimationModal, setShowAddEstimationModal] = useState(false);
   // const [loading, setLoading] = useState(false);
-  const tabs = ['Estimates', 'Templates', 'History'];
+  // const tabs = ['Estimates', 'Templates', 'History'];
 
   const statusOptions = ['All', 'Draft', 'Submitted', 'Approved', 'Rejected'];
   const typeOptions = ['All', 'Residential', 'Commercial', 'Industrial', 'Infrastructure'];
@@ -224,7 +225,9 @@ const EstimationDashboard = () => {
         
         <div className="flex space-x-3">
           {/* <BTButton text='Cost Calulator' loading={false} size='medium' type='outline_gray'   /> */}
-          <BTButton text='Add Estimate' icon={AddCircleIcon} loading={false} size='medium'  />
+          <BTButton text='Add Estimate' icon={AddCircleIcon} loading={false} size='medium' onClick={() => {
+            console.log("Add Estimate Clicked");
+            setShowAddEstimationModal(true)}}  />
         </div>
       </div>
 
@@ -520,6 +523,17 @@ const EstimationDashboard = () => {
         } */}
 
         <div className='h-9'/>
+
+      {showAddEstimationModal && (
+        <AddEstimationModal 
+          isOpen={showAddEstimationModal} 
+          onClose={() => setShowAddEstimationModal(false)} 
+          onSave={(newEstimate) => {
+            setEstimates(prev => [newEstimate, ...prev]);
+            setShowAddEstimationModal(false);
+          }}
+        />
+      )}
     </div>
   );
 };

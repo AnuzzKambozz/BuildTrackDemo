@@ -151,11 +151,27 @@ export  interface CalendarEvent {
     id: number;
     description: string;
     project: string;
-    category: 'Materials' | 'Equipments' | 'Labor';
+    category?: string;
+    purchaseOrder?: string;
     amount: number;
     date: string;
+    items: ExpenseItem[];
     submittedBy: string;
+    invoiceId?: string;
+    invoiceAmount?: number;
+    invoiceDate?:string
+    invoiceDocument?:string
     status: 'pending' | 'approved' | 'rejected';
+  }
+
+  export interface ExpenseItem {
+    id: number;
+    name: string;
+    quantity: number;
+    unit: string;
+    costPer: number;
+    subTotal: number;
+    category?:string
   }
   
   export interface ExpenseSummaryModel {
