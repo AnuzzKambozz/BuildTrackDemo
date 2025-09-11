@@ -20,7 +20,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({
   const [openDropdown, setOpenDropdown] = useState<boolean>(false);
   const [dropdownPosition, setDropdownPosition] = useState<'bottom' | 'top'>('bottom');
 
-  const toggleDropdown = (event: React.MouseEvent): void => {
+  const toggleDropdown = (): void => {
     // const buttonRect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     // const viewportHeight = window.innerHeight;
     // const dropdownHeight = 120; // Approximate height of dropdown

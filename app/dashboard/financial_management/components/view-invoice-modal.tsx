@@ -16,7 +16,7 @@ interface InvoiceViewModalProps {
 }
 
 
-const InvoiceView: React.FC<InvoiceViewModalProps> = ({isOpen, onGeneratePDF, onEdit, invoice, onClose }) => {
+const InvoiceView: React.FC<InvoiceViewModalProps> = ({isOpen, onEdit, invoice, onClose }) => {
       const getStatusColor = (status: string) => {
       switch (status) {
         case 'draft': return 'bg-gray-100 text-gray-800';

@@ -23,7 +23,37 @@ export default function Page() {
               ],
               notificationCount: 5
             });
+            
+
           }, [updateHeader]);
+
+        useEffect(() => {
+        
+        requestToGetMasterData()
+   
+   
+          // Whenever the notes prop changes, update the local state
+       },[] );
+
+
+      const requestToGetMasterData = async () => {
+         // Simulate API request for OTP
+   
+         const response = await fetch('/api/enums/main-master', {
+           method: "GET",
+         });
+   
+         const result = await response.json();
+   
+         if (result.success) {
+           // setUserMessage1(data.message);
+           // setshowInvalidAlert(true);
+           localStorage.setItem("masterData", JSON.stringify(result.data));
+         } 
+         // Assuming the OTP request is successful:
+          // Go to the next step (OTP input)
+       };
+
 
 
           const sampleData: ProjectDashboardProps = {
@@ -147,6 +177,9 @@ export default function Page() {
           };
         
           // return <ProjectDashboard {...sampleData} />;
+
+
+         
 
 return (
 <div className="flex w-full h-full bg-[#f6f6f6]">

@@ -236,7 +236,9 @@ const updateHeader = useHeaderConfig();
               setInvoiceModalMode("edit")
               setIsNewInvoiceModalOpen(true)
             }}
-            onGeneratePDF={(invoice: InvoiceModal)=>{}}
+            onGeneratePDF={(invoice: InvoiceModal)=>{
+              console.log("generate pdf ", invoice )
+            }}
           />
 
          {/* View Transaction Modal */}

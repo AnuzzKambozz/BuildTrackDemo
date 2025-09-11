@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Trash2 } from 'lucide-react';
 import ModalBackdrop from '@/app/components/modal_backdrop';
 import InputField from '@/app/components/textField';
@@ -87,7 +87,7 @@ const AddEstimationModal: React.FC<AddEstimationModalProps> = ({ isOpen, onClose
     { id: 1, description: '', category: 'Materials', quantity: 1, unit: 'pcs', costPer: 0, subTotal: 0 }
   ]);
 
-  const categories: Category[] = [
+  const categories: Category[] = useMemo(() => [
     { value: 'Materials', label: 'Materials' },
     { value: 'Tools', label: 'Tools' },
     { value: 'Safety', label: 'Safety' },
@@ -97,9 +97,9 @@ const AddEstimationModal: React.FC<AddEstimationModalProps> = ({ isOpen, onClose
     { value: 'Equipment', label: 'Equipment' },
     { value: 'General Conditions', label: 'General Conditions' },
     { value: 'Other', label: 'Other' }
-  ];
+  ], []);
   
-  const units: UnitProperties[] = [
+  const units: UnitProperties[] = useMemo(() => [
     { value: 'pcs', label: 'pcs', type: 'discrete', step: 1, min: 1 },
     { value: 'sq ft', label: 'sq ft', type: 'area', step: 0.01, min: 0.01 },
     { value: 'sq m', label: 'sq m', type: 'area', step: 0.01, min: 0.01 },
@@ -112,7 +112,7 @@ const AddEstimationModal: React.FC<AddEstimationModalProps> = ({ isOpen, onClose
     { value: 'hrs', label: 'hrs', type: 'time', step: 0.25, min: 0.25 },
     { value: 'days', label: 'days', type: 'time', step: 0.5, min: 0.5 },
     { value: 'ls', label: 'ls (lump sum)', type: 'lumpsum', step: 1, min: 1 }
-  ];
+  ], []);
 
   // Helper functions
   const getUnitProperties = useCallback((unitValue: string): UnitProperties => {

@@ -38,7 +38,7 @@ const InvoiceRow: React.FC<InvoiceRowProps> = ({
       }
     };
 
-  const toggleDropdown = (event: React.MouseEvent): void => {
+  const toggleDropdown = (): void => {
     // const buttonRect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     // const viewportHeight = window.innerHeight;
     // const dropdownHeight = 120; // Approximate height of dropdown

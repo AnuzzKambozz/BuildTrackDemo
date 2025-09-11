@@ -113,6 +113,8 @@ const financialMetrics: FinancialMetric[] = [
 //     }
 //   ];
 
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const [invoices, setInvoices] = useState<InvoiceModal[]>([
     {
       id: 'INV-2025-001',

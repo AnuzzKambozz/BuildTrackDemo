@@ -1,9 +1,9 @@
 "use client";
 
-import {  AlertCircle, CreditCard, FileText, Users, Calendar, TrendingUp } from "lucide-react";
+import {  AlertCircle, CreditCard, FileText, Users } from "lucide-react";
 import {  useState } from "react";
 import MetricCard from "./metric_card";
-import { FinancialMetric, CashflowData, Transaction, InsightItem } from "@/app/models/common";
+import { FinancialMetric, Transaction } from "@/app/models/common";
 import TransactionsTable from "./transactional_table"
 import { Search } from "lucide-react";
 import {inter} from "@/app/fonts"

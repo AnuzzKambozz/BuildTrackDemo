@@ -20,6 +20,7 @@ const TransactionDropdown: React.FC<TransactionDropdownProps> = ({
   onClose
 }) => {
   const [position, setPosition] = useState({ top: 0, left: 0 });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [dropdownPosition, setDropdownPosition] = useState<'bottom' | 'top'>('bottom');
 
   useEffect(() => {
