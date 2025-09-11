@@ -6,6 +6,12 @@ export interface AuthPageProps {
 
 }
 
+export interface ExceptionMdl {
+    code:        number;
+    message:     string;
+    description: string;
+}
+
 
 export type TaskStatus = 'todo' | 'in-progress' | 'review' | 'done';
 
@@ -109,17 +115,42 @@ export  interface CalendarEvent {
   }
   
 
-  export interface Transaction {
-    id: string;
-    date: string;
-    time: string;
-    source: string;
-    destination: string;
-    via: string;
-    utr: string;
-    amount: number;
-    type: 'credit' | 'debit';
-  }
+export interface Transaction {
+  id: string;
+  invoiceId: string;
+  amount: number;
+  paymentMethod: string;
+  paymentDate: string;
+  reference: string;
+  client: string;
+  project: string
+  description: string;
+  fees: number;
+  netAmount: number;
+}
+
+export interface InvoiceModal {
+    id: string,
+    client: string,
+    clientEmail: string,
+    projectName: string,
+    projectCode: string,
+    amount: number,
+    issueDate: string,
+    dueDate: string,
+    status: string,
+    items: InvoiceItemModal[]
+}
+
+export interface InvoiceItemModal {
+  id: number;
+  description: string;
+  category: string;
+  quantity: number;
+  unit: string;
+  costPer: number;
+  subTotal: number;
+}
   
   export interface FinancialMetric {
     title: string;
@@ -235,3 +266,5 @@ export  interface CalendarEvent {
     type: string;
     status: string;
   }
+
+  export type PaymentMethod = 'Credit Card' | 'Debit Card' | 'Bank Transfer' | 'PayPal' | 'Stripe' | 'Cash' | 'Check';

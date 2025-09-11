@@ -36,3 +36,50 @@ export const getAvatarColor = (name: string): string => {
     };
     return colors[color as keyof typeof colors] || colors.blue;
   };
+
+
+export const isOnboardingDone = (): boolean => {
+    // Check if we're in the browser environment
+    return true
+    // if (typeof window === 'undefined') {
+    //   return false;
+    // }
+    
+    // const user = localStorage.getItem("userProfile");
+    // console.log(user);
+    
+    // if (user) {
+    //   try {
+    //     const userProfile = JSON.parse(user);
+    //     return userProfile.company.is_onboarded;
+    //   } catch (error) {
+    //     console.error('Error parsing user profile:', error);
+    //     return false;
+    //   }
+    // }
+    
+    // return false;
+};
+
+export const onboardingCurrentStep = (): number => {
+    // Check if we're in the browser environment
+    if (typeof window === 'undefined') {
+      return 0;
+    }
+    
+    const user = localStorage.getItem("userProfile");
+    console.log(user);
+    
+    if (user) {
+      try {
+        const userProfile = JSON.parse(user);
+        const stage = userProfile.company.onboarding_stage;
+        return stage.sequence - 1
+ 
+      } catch (error) {
+        console.error('Error parsing user profile:', error);
+        return 0;
+      }
+    }
+    return 0;
+  };
