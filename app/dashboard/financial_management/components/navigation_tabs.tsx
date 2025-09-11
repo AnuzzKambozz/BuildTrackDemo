@@ -1,4 +1,5 @@
 "use client";
+import {inter} from "@/app/fonts"
 
 interface NavigationTabsProps {
     tabs: string[];
@@ -8,24 +9,24 @@ interface NavigationTabsProps {
 
 
   const NavigationTabs: React.FC<NavigationTabsProps> = ({ tabs, activeTab, onTabChange }) => (
-    <div className="bg-white border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="">
         <div className="flex space-x-8">
-          {tabs.map((tab) => (
+          {tabs.map(tab => (
             <button
               key={tab}
               onClick={() => onTabChange(tab)}
-              className={`pb-4 px-1 border-b-2 font-medium text-sm ${
-                activeTab === tab
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
+              className={`${inter.className} antialiased pb-2 text-[14px]  transition-colors ${
+                              activeTab === tab
+                                ? 'text-[#375DED] border-b-2 border-[#375DED] font-semibold'
+                                : 'text-gray-600 hover:text-[#272727] font-normal'
+                            }`}
             >
               {tab}
             </button>
           ))}
         </div>
       </div>
-    </div>
   );
+
+  
 export default NavigationTabs;  
